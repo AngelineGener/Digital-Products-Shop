@@ -1,6 +1,6 @@
 <?php
 function uploadProductImage($file) {
-    // No file chosen
+    
     if (!$file || $file['error'] === UPLOAD_ERR_NO_FILE) {
         return ['path' => null, 'error' => null];
     }
