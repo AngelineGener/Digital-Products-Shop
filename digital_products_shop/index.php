@@ -2,7 +2,7 @@
 require_once 'core/dbConfig.php';
 require_once 'core/auth.php';
 require_once 'core/models.php';
-requireLogin();   // not logged in -> redirected to login.php
+requireLogin();  
 
 $search = trim($_GET['search'] ?? '');
 $categories = getAllCategories($pdo, $search);
@@ -19,7 +19,7 @@ $categories = getAllCategories($pdo, $search);
 
     <div class="hero">
         <h1>Digital Products Store</h1>
-        <p>Categories (parent entity). Each category can have many products.</p>
+        <p>Categories</p>
     </div>
 
     <?php showFlash(); ?>
