@@ -1,5 +1,5 @@
 <?php
-/* ---------------- USERS ---------------- */
+
 function getUserByUsername($pdo, $username) {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
     $stmt->execute([$username]);
@@ -22,7 +22,7 @@ function createUser($pdo, $d) {
     ]);
 }
 
-/* ---------------- CATEGORIES (PARENT) ---------------- */
+
 function getAllCategories($pdo, $search = '') {
     $sql = "SELECT c.*,
                    CONCAT(a.first_name, ' ', a.last_name) AS added_by_name,
@@ -32,7 +32,7 @@ function getAllCategories($pdo, $search = '') {
             LEFT JOIN users u ON c.last_updated_by = u.user_id";
     $params = [];
 
-    // SEARCH: match name, description, ID or the name of the user who added it
+    
     if ($search !== '') {
         $sql .= " WHERE c.category_name LIKE ?
                      OR c.description LIKE ?
@@ -71,7 +71,7 @@ function deleteCategory($pdo, $id) {
     return $stmt->execute([$id]);
 }
 
-/* ---------------- PRODUCTS (CHILD) ---------------- */
+
 
 // All ACTIVE products (items in the recycle bin are hidden)
 function getAllProducts($pdo, $search = '') {
@@ -85,7 +85,7 @@ function getAllProducts($pdo, $search = '') {
             WHERE p.is_deleted = 0";
     $params = [];
 
-    // SEARCH: match title, description, file type, category, ID or who added it
+  
     if ($search !== '') {
         $sql .= " AND (p.title LIKE ?
                     OR p.description LIKE ?
@@ -103,7 +103,7 @@ function getAllProducts($pdo, $search = '') {
     return $stmt->fetchAll();
 }
 
-// RECYCLE BIN: products that were deleted, with who deleted them and when
+
 function getDeletedProducts($pdo) {
     $sql = "SELECT p.*, c.category_name,
                    CONCAT(d.first_name, ' ', d.last_name) AS deleted_by_name
@@ -128,7 +128,7 @@ function insertProduct($pdo, $d, $imagePath, $userId) {
     return $stmt->execute([$d['category_id'], $d['title'], $d['description'], $d['price'], $d['file_type'], $imagePath, $userId]);
 }
 
-// $imagePath = null means "keep the current image"
+
 function updateProduct($pdo, $id, $d, $userId, $imagePath = null) {
     $sql = "UPDATE products
             SET category_id = ?, title = ?, description = ?, price = ?, file_type = ?,
@@ -147,7 +147,7 @@ function updateProduct($pdo, $id, $d, $userId, $imagePath = null) {
     return $stmt->execute($params);
 }
 
-// DELETE = move to the recycle bin (record who deleted it and when)
+
 function softDeleteProduct($pdo, $id, $userId) {
     $stmt = $pdo->prepare("UPDATE products
                            SET is_deleted = 1, deleted_by = ?, date_deleted = NOW()
@@ -155,7 +155,7 @@ function softDeleteProduct($pdo, $id, $userId) {
     return $stmt->execute([$userId, $id]);
 }
 
-// RESTORE = bring it back to the products table
+
 function restoreProduct($pdo, $id) {
     $stmt = $pdo->prepare("UPDATE products
                            SET is_deleted = 0, deleted_by = NULL, date_deleted = NULL
